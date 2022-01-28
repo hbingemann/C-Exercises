@@ -9,18 +9,19 @@ void reverse(char *s);
 int main()
 {
     char s[] = "hello, world";
+    printf("%s\n", s);
     reverse(s);
     printf("%s\n", s);
 }
 
 void reverse(char *s)
 {
-    char t[MAX];
-    strcpy(t, s);
+    char ch[MAX];
+    strcpy(ch, s);
+    char *t = ch;
 
-    while (++*t != '\0');
+    while (*(++s + 1) != '\0');  // go to end of s
 
-    for (int i = 0; *s != '\0'; s++, i++)
-        *s = ;
-
+    for ( ; *t != '\0'; s--, t++)
+        *s = *t;
 }
