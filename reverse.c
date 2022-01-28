@@ -16,12 +16,16 @@ int main()
 
 void reverse(char *s)
 {
-    char ch[MAX];
-    strcpy(ch, s);
-    char *t = ch;
+    char *t = s;
+    char temp;
 
     while (*(++s + 1) != '\0');  // go to end of s
 
-    for ( ; *t != '\0'; s--, t++)
-        *s = *t;
+    for ( ; s - t > 1; s--, t++)
+    {
+        // swap
+        temp = *t;
+        *t = *s;
+        *s = temp;
+    }
 }
