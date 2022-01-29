@@ -1,3 +1,4 @@
+void quicksort(char *v[], int, int);
 
 /*quicksort from left to right in increasing order */
 void quicksort(char *v[], int left, int right)
@@ -6,7 +7,7 @@ void quicksort(char *v[], int left, int right)
     void swap(char *v[], int i, int j);
 
     if (left >= right)  /* do nothing if array contains */
-        return 0;       /* less than two elements */
+        return;       /* less than two elements */
 
     swap(v, left, (left + right)/2);
     last = left;
@@ -25,5 +26,5 @@ void swap(char *v[], int i, int j)
 
     temp = v[i];
     v[i] = v[j];
-    v[i] = temp;
+    v[j] = temp;
 }

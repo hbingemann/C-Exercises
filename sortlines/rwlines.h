@@ -2,16 +2,22 @@
 #include <stdio.h>
 
 #define MAXLEN 1000  /* maximum length of any input line */
+#define ALLOCSIZE 500000
 
-int getline(char *, int);
+char allocbuf[ALLOCSIZE];
+char *cp = allocbuf;
+
+int _getline(char *s, int lim);
+char *alloc(int);
 
 /* read input lines */
 int readlines(char *lineptr[], int maxlines)
 {
     int len, nlines;
     char *p, line[MAXLEN];
+
     nlines = 0;
-    while ((len = getline(line, MAXLEN)) > 0)
+    while ((len = _getline(line, MAXLEN)) > 0)
         if (nlines >= maxlines || (p = alloc(len)) == NULL)
             return -1;
         else {
@@ -26,13 +32,16 @@ int readlines(char *lineptr[], int maxlines)
 void writelines(char *lineptr[], int nlines)
 {
     while (nlines-- > 0)
+    {
         printf("%s\n", *lineptr++);
+    }
 }
 
 /* read line into s, return length */
-int getline(char s[], int lim)
+int _getline(char *s, int lim)
 {
     int c, i;
+
     for (i = 0; i < lim - 1 && (c = getchar()) != EOF && c != '\n'; ++i)
         s[i] = c;
     if (c == '\n') {
@@ -41,4 +50,15 @@ int getline(char s[], int lim)
     }
     s[i] = '\0';
     return i;
+}
+
+/* allocate enough memory for n chars */
+char *alloc(int n)
+{
+    if (cp + n < allocbuf + ALLOCSIZE)
+    {
+        cp += n;
+        return cp - n;
+    } else
+        return NULL;
 }
