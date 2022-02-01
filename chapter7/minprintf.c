@@ -1,14 +1,15 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 void minprintf(char *fmt, ...);
 
 int main()
 {
-    int x = 5;
-    char s[] = "bum";
-    minprintf("X: %d, %s\n", x, s);
+    int x = 5555;
+    char s[] = "bumsicle";
+    minprintf("X :%3d:, :%10s:\n", x, s);
 }
 
 
@@ -19,10 +20,11 @@ void minprintf(char *fmt, ...)
     char *p, *sval, c;
     int ival;
     double dval;
-    int fwidth = 0;
+    int fwidth;
 
     va_start(ap, fmt);
     for (p = fmt; *p; p++) {
+        fwidth = 0;
         if (*p != '%') {
             putchar(*p);
             continue;
@@ -37,7 +39,7 @@ void minprintf(char *fmt, ...)
                         break;
                     case 'f':
                         dval = va_arg(ap, double);
-                        printf("%f", dval);
+                        fwidth -= printf("%f", dval);
                         break;
                     case 's':
                         for (sval = va_arg(ap, char *); *sval; sval++)
@@ -52,7 +54,7 @@ void minprintf(char *fmt, ...)
                 }
                 break;  /* always done at letter */
             } else if (isdigit(c)) {
-                fwidth = fwidth * 10 + atoi(c);
+                fwidth = fwidth * 10 + (c - '0');
             }
         }
         while (fwidth-- > 0)
