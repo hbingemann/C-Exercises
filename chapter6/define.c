@@ -24,7 +24,7 @@ char getchp = 0;
 unsigned hash(char *);
 struct nlist *lookup(char *);
 struct nlist *install(char *, char *);
-void fungetch(char);
+void ungetch(char);
 char fgetch(FILE *);
 int getword(char *, int, FILE *);
 
@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
         printf("Usage: ./define FILENAME");
         return 1;
     }
-    
+
     FILE *inp = fopen(argv[1], "r");
     FILE *outp = fopen("outfile.c", "w");
 
@@ -50,13 +50,19 @@ int main(int argc, char const *argv[])
             if (*p++ == *d++)
             { /* check for new def */
                 while ((*p++ = fgetch(inp)) == *d++)
+                {
                     if (*d == '\0')
                     {
+                        d = define;
                         getword(s, MAXLEN, inp);
                         getword(def, MAXLEN, inp);
                         install(s, def);
                         goto loop;
                     }
+                }
+                fputs(s, fp);
+                p = s;
+                goto loop;
             } else { /* check for replacement */
                 for (int i = 0; i < HASHSIZE; i++)
                 {
@@ -65,7 +71,8 @@ int main(int argc, char const *argv[])
                         
                     }
                 }
-            }   
+            }
+            fputc(*p, fp);
         }
     return 0;
 }
@@ -77,7 +84,7 @@ int getword(char *word, int lim, FILE *fp)
     while (isspace(ch = fgetch(fp)))  /* skip whitespace */
         if (ch == '\n')
             return ch;
-        
+
     if (ch != EOF)
         *w++ = ch;
     if (!isalpha(ch))
@@ -94,7 +101,7 @@ int getword(char *word, int lim, FILE *fp)
     }
     *w = '\0';
     return word[0];
-}  
+}
 
 /* getch and ungetch: use buffer to place character back on stream */
 char fgetch(FILE *fp)
@@ -102,10 +109,10 @@ char fgetch(FILE *fp)
     return (getchp > 0) ? getchbuf[--getchp] : fgetc(fp);
 }
 
-void fungetch(char c)
+void ungetch(char c)
 {
     if (getchp >= BUFSIZE)
-        printf("fungetch: too many characters\n");
+        printf("ungetch: too many characters\n");
     else
         getchbuf[getchp++] = c;
 }
@@ -126,7 +133,7 @@ struct nlist *lookup(char *s)
     struct nlist *np;
 
     for (np = hashtab[hash(s)]; np != NULL; np = np->next)
-        if (strcmp(s, np->name) == 0)   
+        if (strcmp(s, np->name) == 0)
             return np;
     return NULL;
 }
@@ -145,7 +152,7 @@ struct nlist *install(char *name, char *defn)
         hashval = hash(name);
         np->next = hashtab[hashval];
         hashtab[hashval] = np;
-    } else 
+    } else
         free((void *) np->defn);  /* free previous defn so that new defn can be put there */
     if ((np->defn = strdup(defn)) == NULL)
         return NULL;
