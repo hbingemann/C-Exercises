@@ -1,5 +1,7 @@
 /*
     make a custom define statement that replaces words with their definition
+
+    DOESN'T WORK
 */
 
 #include <stdio.h>
@@ -57,22 +59,36 @@ int main(int argc, char const *argv[])
                         getword(s, MAXLEN, inp);
                         getword(def, MAXLEN, inp);
                         install(s, def);
+                        p = s;
                         goto loop;
                     }
                 }
-                fputs(s, fp);
-                p = s;
+                fputs(s, outp);
                 goto loop;
             } else { /* check for replacement */
-                for (int i = 0; i < HASHSIZE; i++)
-                {
-                    for (np = hashtab[i]; np != NULL; np = np->next)
-                    {   /* loop through every word */
-                        
+                p = s;
+                replacement:        
+                    *p++ = fgetch(inp);
+                    for (int i = 0; i < HASHSIZE; i++)
+                    {
+                        for (np = hashtab[i]; np != NULL; np = np->next)
+                        {   /* loop through every word */
+                            if (p - s < strlen(np->name) && *p == *(np->name + (p - s)))
+                            {
+                                if (p - s == strlen(np->name) - 1) /* if end of word */
+                                {
+                                    fputs(np->defn, outp);
+                                    p = s;
+                                    goto loop;
+                                }     
+                                else
+                                    goto replacement;
+                            }
+                        }
                     }
-                }
+                    p = s;
+                    fputs(s, outp);
             }
-            fputc(*p, fp);
         }
     return 0;
 }
@@ -95,7 +111,7 @@ int getword(char *word, int lim, FILE *fp)
     for (; --lim > 0; w++)
     {
         if (!isalnum(*w = fgetch(fp))) {
-            fungetch(*w);
+            ungetch(*w);
             break;
         }
     }
