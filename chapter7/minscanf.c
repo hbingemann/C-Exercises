@@ -63,42 +63,9 @@ int minscanf(char *fmt, ...)
             }
         }
     }
+    va_end(ap);
 
     return args_eval;
-
-
-    //     while ((c = *++p) && c != ' ')
-    //     {
-    //         if (isalpha(c)) {
-    //             switch (c) {
-    //                 case 'd':
-    //                     ival = va_arg(ap, int);
-    //                     fwidth -= printf("%d", ival);
-    //                     break;
-    //                 case 'f':
-    //                     dval = va_arg(ap, double);
-    //                     fwidth -= printf("%f", dval);
-    //                     break;
-    //                 case 's':
-    //                     for (sval = va_arg(ap, char *); *sval; sval++)
-    //                     {
-    //                         putchar(*sval);
-    //                         fwidth--;
-    //                     }
-    //                     break;
-    //                 default:
-    //                     putchar(c);
-    //                     break;
-    //             }
-    //             break;  /* always done at letter */
-    //         } else if (isdigit(c)) {
-    //             fwidth = fwidth * 10 + (c - '0');
-    //         }
-    //     }
-    //     while (fwidth-- > 0)
-    //         putchar(' ');
-    // }
-    va_end(ap);
 }
 
 char getch(void)
